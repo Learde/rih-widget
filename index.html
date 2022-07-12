@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="UTF-8" />
+        <title>widget</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Roboto:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/vue-select@3.18.3/dist/vue-select.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/vue-date-pick@1.4.1/dist/vueDatePick.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/vue2-daterange-picker@0.6.8/dist/vue2-daterange-picker.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/vue2-timepicker@1.1.6/dist/VueTimepicker.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/vue-phone-number-input@1.1.12/dist/vue-phone-number-input.min.css"
+        />
+        <script
+            src="https://kit.fontawesome.com/a8314b290c.js"
+            crossorigin="anonymous"
+        ></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+        <script src="https://unpkg.com/vue-select@3.18.3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-date-pick@1.4.1/dist/vueDatePick.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
+        <script src="https://unpkg.com/humanize-duration@3.27.1/humanize-duration.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue2-daterange-picker@0.6.8/dist/vue2-daterange-picker.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue2-timepicker@1.1.6/dist/VueTimepicker.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-phone-number-input@1.1.12/dist/vue-phone-number-input.umd.min.js"></script>
+        <script>
+            const TOKEN = "CLMowFporwoWPDsAkKbovdoZNaQEkTfd";
+            const DOMAIN = "https://api-dev.rentinhand.ru";
+            const MEDIA = "https://media-dev.rentinhand.ru";
+        </script>
+        <style>
+            * {
+                font-family: Manrope, sans-serif;
+                box-sizing: border-box;
+
+                margin: 0;
+                padding: 0;
+            }
+
+            :root {
+                --widget-primary: #2e55b9;
+                --widget-primary-light: #e3f2fd;
+                --widget-primary-hover: #284eaf;
+                --widget-border-color: #ccc;
+                --widget-red: #e53935;
+
+                --widget-input-fz: 16px;
+
+                --vs-border-radius: 8px;
+                --vs-border-color: var(--widget-border-color);
+                --vs-selected-bg: var(--widget-primary-light);
+                --vs-selected-border-color: transparent;
+                --vs-dropdown-option--active-bg: var(--widget-primary);
+                --vs-selected-color: var(--widget-primary);
+                --vs-font-size: var(--widget-input-fz);
+            }
+
+            ::placeholder {
+                color: #333 !important;
+                opacity: 0.5 !important;
+            }
+
+            .widget__list,
+            .widget__show-page,
+            .widget__booking {
+                padding: 30px 50px;
+                background-color: #fafafa;
+            }
+
+            .widget__show-page {
+                background-color: #ffffff;
+            }
+
+            .widget__booking {
+                background-color: #f9f9f9;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 40px;
+            }
+
+            .form-group {
+                width: 100%;
+                margin-right: 40px;
+            }
+
+            .form-group__input,
+            .vs__dropdown-toggle,
+            .vue-treeselect__control,
+            .vdpComponent > input {
+                min-height: 35px;
+                width: 100%;
+            }
+
+            .vdpComponent > input,
+            .vue-treeselect__control {
+                border-radius: 8px;
+                border: 1px solid var(--widget-border-color);
+                box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.08);
+            }
+
+            .vdpComponent > input {
+                padding-left: 10px;
+                padding-right: 10px !important;
+            }
+
+            .vue-treeselect__multi-value-item {
+                border-radius: 4px;
+                color: var(--widget-primary);
+            }
+
+            .vue-treeselect__value-remove {
+                color: var(--widget-primary);
+            }
+
+            .vs__selected {
+                margin-bottom: 4px;
+                border-radius: 4px;
+                font-size: 12px;
+            }
+
+            .vs__deselect {
+                fill: var(--widget-primary);
+                border-left: 1px solid #fff;
+            }
+
+            .vs__deselect svg {
+                transform: scale(0.6);
+            }
+
+            .vs__deselect:hover {
+                fill: var(--widget-red);
+            }
+
+            .vs__dropdown-toggle {
+                padding: 0 1px;
+                box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.08);
+                background-color: #fff;
+            }
+
+            .vue-treeselect__control {
+                height: 35px;
+            }
+
+            .vue-treeselect__placeholder,
+            .vue-treeselect__single-value {
+                line-height: 35px;
+                color: #333 !important;
+                opacity: 0.5;
+                font-size: var(--widget-input-fz);
+            }
+
+            .form-group__inline {
+                display: flex;
+                align-items: center;
+            }
+
+            .form-group__additional {
+                margin-right: 10px;
+            }
+
+            input {
+                font-size: var(--widget-input-fz);
+                outline: none !important;
+            }
+
+            .form-group label {
+                display: inline-block;
+                font-size: 14px;
+                margin-bottom: 2px;
+            }
+
+            .vdpClearInput::before {
+                border: none !important;
+                margin: 0 !important;
+                transform: translate(-50%, -50%);
+                width: 20px;
+                height: 24px;
+                font-size: 20px;
+                box-shadow: none !important;
+            }
+
+            .vs__search,
+            .vs__search:focus {
+                margin-top: 0 !important;
+            }
+
+            .vdpArrowPrev:after {
+                border-right-color: var(--widget-primary);
+            }
+
+            .vdpArrowNext:after {
+                border-left-color: var(--widget-primary);
+            }
+
+            .vdpCell.selectable:hover .vdpCellContent,
+            .vdpCell.selected .vdpCellContent {
+                background: var(--widget-primary);
+            }
+
+            .vdpCell.today {
+                color: var(--widget-primary);
+            }
+
+            .vdpTimeUnit > input:hover,
+            .vdpTimeUnit > input:focus {
+                border-bottom-color: var(--widget-primary);
+            }
+
+            .vs__dropdown-menu {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .vs__dropdown-option {
+                min-width: 100%;
+            }
+
+            .button {
+                min-height: 35px;
+                height: 35px;
+                background-color: var(--widget-primary);
+                color: #fff;
+                border: none;
+                text-align: center;
+                border-radius: 8px;
+                transition: 0.1s;
+            }
+
+            .button--long {
+                min-width: 130px;
+            }
+
+            .button:hover {
+                background-color: var(--widget-primary-hover);
+                cursor: pointer;
+            }
+
+            .button[disabled] {
+                background-color: var(--widget-primary-hover);
+                cursor: default;
+            }
+
+            .main {
+                display: flex;
+                flex-wrap: wrap;
+                position: relative;
+                min-height: 200px;
+            }
+
+            .card {
+                width: calc(33.33% - 30px * 2 / 3);
+                background-color: #fff;
+                padding: 20px 25px;
+                border-radius: 12px;
+                margin-right: 30px;
+                margin-bottom: 30px;
+                box-shadow: 0px 4px 7px 0px rgba(0, 0, 0, 0.08);
+                position: relative;
+            }
+
+            .card:nth-child(3n) {
+                margin-right: 0;
+            }
+
+            .card__img {
+                width: 100%;
+                height: auto;
+            }
+
+            .card__category {
+                color: #aaa;
+                position: absolute;
+                top: 20px;
+                left: 25px;
+            }
+
+            .card__info {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                font-size: 14px;
+                color: #a7a7a7;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .card__additional {
+                margin-right: 8px;
+                margin-bottom: 4px;
+            }
+
+            .card__additional i {
+                margin-right: 4px;
+            }
+
+            .card__more,
+            .card__book {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 15px 0;
+                cursor: pointer;
+            }
+
+            .card__more {
+                color: #666;
+                border-bottom: 2px solid #fafafa;
+            }
+
+            .card__book {
+                font-weight: 700;
+                color: var(--widget-primary);
+            }
+
+            .card__book i {
+                position: relative;
+                right: 0;
+                transition: all 0.5s ease;
+            }
+
+            .card__book:hover i {
+                right: 8px;
+            }
+
+            .info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .info__img-wrapper,
+            .info__description {
+                width: 50%;
+            }
+
+            .info__img-wrapper img {
+                width: 80%;
+                height: auto;
+                display: block;
+                border-radius: 40px;
+                box-shadow: 0px 0px 15px 0px rgba(34, 60, 80, 0.1);
+            }
+
+            .info__heading {
+                font-weight: 400;
+                font-size: 32px;
+                margin-bottom: 15px;
+            }
+
+            .info__category {
+                font-weight: 400;
+                text-transform: uppercase;
+                font-size: 13px;
+                letter-spacing: 1.1px;
+                color: var(--widget-primary);
+                margin-bottom: 20px;
+            }
+
+            .info__desc {
+                line-height: 1.6;
+                font-size: 16px;
+            }
+
+            .info__price {
+                margin-top: 30px;
+            }
+
+            .info__price--mb {
+                margin-bottom: 20px;
+            }
+
+            .price__heading {
+                font-size: 16px;
+                margin-bottom: 8px;
+            }
+
+            .price__list {
+                list-style: none;
+            }
+
+            .price__item {
+                font-size: 15px;
+                margin-bottom: 6px;
+            }
+
+            .price__item:last-child {
+                margin-bottom: 0;
+            }
+
+            .booking__heading {
+                font-size: 28px;
+                font-weight: 700;
+                text-align: center;
+                margin-top: 10px;
+            }
+
+            .vue-daterange-picker .reportrange-text {
+                display: none;
+            }
+
+            .daterangepicker td.in-range {
+                background-color: #f1f1f1 !important;
+            }
+
+            .daterangepicker td.active.in-range.start-date {
+                background-color: #f1f1f1;
+            }
+
+            .daterangepicker td.active.in-range.end-date {
+                background-color: #f1f1f1;
+            }
+
+            td.active.in-range.start-date,
+            td.active.in-range.end-date {
+                position: relative;
+                color: #fff;
+                z-index: 10;
+            }
+
+            td.active.in-range.start-date {
+                border-top-left-radius: 100%;
+                border-bottom-left-radius: 100%;
+            }
+
+            td.active.in-range.end-date {
+                border-bottom-right-radius: 100%;
+                border-top-right-radius: 100%;
+            }
+
+            td.active.in-range.start-date::before,
+            td.active.in-range.end-date::before {
+                content: "";
+                background-color: #f1f1f1;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 38px;
+                height: 38px;
+                border-radius: 100%;
+                z-index: -1;
+            }
+
+            td.active.in-range.start-date::before {
+                background-color: #4f4f4f;
+            }
+
+            td.active.in-range.end-date::before {
+                background-color: var(--widget-primary);
+            }
+
+            .daterangepicker th.month {
+                width: auto !important;
+                font-size: 14px;
+            }
+
+            .daterangepicker .calendar-table td,
+            .daterangepicker .calendar-table th {
+                height: 38px;
+                width: 38px;
+                min-width: 38px;
+                font-size: 15px;
+            }
+
+            .daterangepicker .drp-calendar {
+                padding: 0 !important;
+            }
+
+            .daterangepicker .calendar-table {
+                padding: 0 !important;
+            }
+
+            .daterangepicker {
+                border-radius: 15px;
+                overflow: hidden;
+                border: none;
+                box-shadow: 0px 0px 15px 0px rgba(34, 60, 80, 0.1);
+                padding: 15px;
+            }
+
+            .calendar {
+                display: flex;
+                width: 300px;
+                flex-direction: column;
+            }
+
+            .time-picker {
+                display: flex;
+                margin-bottom: 10px;
+            }
+
+            .time-picker > div {
+                width: 50%;
+            }
+
+            .calendar__label {
+                font-size: 14px;
+                font-weight: bold;
+                margin-bottom: 8px;
+                display: block;
+            }
+
+            .vue__time-picker {
+                width: 100%;
+            }
+
+            .vue__time-picker input.display-time {
+                width: 100%;
+                border-radius: 8px;
+                border: unset;
+                box-shadow: 0px 0px 15px 0px rgba(34, 60, 80, 0.1);
+            }
+
+            .vue__time-picker-dropdown ul li:not([disabled]).active,
+            .vue__time-picker-dropdown ul li:not([disabled]).active:focus,
+            .vue__time-picker-dropdown ul li:not([disabled]).active:hover,
+            .vue__time-picker .dropdown ul li:not([disabled]).active,
+            .vue__time-picker .dropdown ul li:not([disabled]).active:focus,
+            .vue__time-picker .dropdown ul li:not([disabled]).active:hover {
+                background-color: var(--widget-primary);
+            }
+
+            .booking__wrapper {
+                margin-top: 40px;
+                display: flex;
+            }
+
+            .booking__time,
+            .booking__info {
+                width: 50%;
+            }
+
+            .booking__time {
+                display: flex;
+                justify-content: center;
+            }
+
+            .booking__calendar {
+                display: inline-block;
+            }
+
+            .booking__total {
+                margin-top: 40px;
+            }
+
+            .booking__total > span {
+                display: block;
+                margin-bottom: 7px;
+            }
+
+            .booking__total > span:last-child {
+                margin-bottom: 0;
+            }
+
+            .booking__range {
+                margin-top: 36px;
+            }
+
+            .range__badge {
+                border: 1.5px solid #ccc;
+                border-radius: 7px;
+                padding: 5px 20px;
+                display: inline-block;
+                margin-left: 3px;
+            }
+
+            .range__badge--mr {
+                margin-right: 7px;
+            }
+
+            .booking-form {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background-color: #fff;
+                padding: 15px;
+                box-shadow: 0px 0px 15px 0px rgba(34, 60, 80, 0.1);
+                border-radius: 15px;
+                margin-top: 60px;
+                position: relative;
+            }
+
+            .booking-form__inventory {
+                display: flex;
+                align-items: center;
+            }
+
+            .booking-form__img {
+                width: 60px;
+                height: auto;
+            }
+
+            .booking-form__info {
+                margin-left: 10px;
+            }
+
+            .booking-form__info span {
+                display: block;
+            }
+
+            .booking-form__title {
+                font-weight: 700;
+                font-size: 12px;
+                margin-bottom: 3px;
+            }
+
+            .booking-form__category {
+                font-size: 11px;
+                text-transform: uppercase;
+                color: var(--widget-primary);
+                letter-spacing: 1.1px;
+                font-weight: 700;
+            }
+
+            .booking-form__total {
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            .back {
+                justify-content: flex-start !important;
+            }
+
+            @media (max-width: 1200px) {
+                :root {
+                    --widget-input-fz: 14px;
+                }
+            }
+
+            @media (max-width: 1100px) {
+                .header {
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    margin-bottom: 25px;
+                }
+
+                .header .button {
+                    margin-bottom: 15px;
+                }
+            }
+
+            @media (max-width: 1000px) {
+                .booking-form__inventory {
+                    display: none;
+                }
+            }
+
+            @media (max-width: 800px) {
+                .info__img-wrapper,
+                .info__description,
+                .booking__time,
+                .booking__info {
+                    width: 100%;
+                }
+
+                .info,
+                .booking__wrapper {
+                    flex-wrap: wrap;
+                }
+
+                .booking-form__inventory {
+                    display: flex;
+                }
+
+                .info__description {
+                    margin-top: 36px;
+                }
+
+                .info__img-wrapper img {
+                    width: 60%;
+                    margin: 0 auto;
+                }
+            }
+
+            @media (max-width: 550px) {
+                .booking-form__inventory {
+                    display: none;
+                }
+
+                .info__img-wrapper img {
+                    width: 80%;
+                    margin: 0 auto;
+                }
+            }
+
+            @media (max-width: 400px) {
+                .booking-form__total {
+                    font-size: 12px;
+                }
+
+                .info__img-wrapper img {
+                    width: 100%;
+                    margin: 0 auto;
+                }
+            }
+
+            @media (max-width: 1100px) and (min-width: 901px) {
+                .form-group {
+                    width: calc(25% - 3 * 30px / 4);
+                    margin-right: 30px;
+                    margin-bottom: 15px;
+                }
+
+                .form-group:nth-child(4n) {
+                    margin-right: 0;
+                }
+            }
+
+            @media (max-width: 900px) and (min-width: 751px) {
+                .header {
+                    justify-content: space-between;
+                }
+
+                .form-group {
+                    width: calc(33.33% - 2 * 30px / 3);
+                    margin-right: 30px;
+                    margin-bottom: 15px;
+                }
+
+                .form-group:nth-child(n + 3) {
+                    margin-right: 0;
+                }
+            }
+
+            @media (max-width: 750px) and (min-width: 501px) {
+                .form-group {
+                    width: calc(50% - 30px / 2);
+                    margin-right: 30px;
+                    margin-bottom: 15px;
+                }
+
+                .form-group:nth-child(2n) {
+                    margin-right: 0;
+                }
+            }
+
+            @media (max-width: 500px) {
+                .form-group {
+                    width: 90%;
+                    margin-right: 0;
+                    margin-bottom: 15px;
+                }
+
+                .form-group__additional {
+                    display: none;
+                }
+
+                .form-group__label--ml {
+                    margin-left: 0 !important;
+                }
+
+                .form-group__label--empty {
+                    display: none !important;
+                }
+            }
+
+            @media (max-width: 900px) {
+                .card {
+                    width: calc(50% - 30px / 2);
+                }
+                .card:nth-child(3n) {
+                    margin-right: 30px;
+                }
+                .card:nth-child(2n) {
+                    margin-right: 0;
+                }
+            }
+
+            @media (max-width: 590px) {
+                .card {
+                    width: 100%;
+                    margin-right: 0 !important;
+                }
+            }
+
+            .loading {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .loading--background {
+                background-color: rgba(230, 230, 230, 0.4);
+            }
+
+            .lds-ring {
+                display: inline-block;
+                position: relative;
+                width: 80px;
+                height: 80px;
+            }
+            .lds-ring div {
+                box-sizing: border-box;
+                display: block;
+                position: absolute;
+                width: 64px;
+                height: 64px;
+                margin: 8px;
+                border: 8px solid var(--widget-primary);
+                border-radius: 50%;
+                animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                border-color: var(--widget-primary) transparent transparent
+                    transparent;
+            }
+            .lds-ring div:nth-child(1) {
+                animation-delay: -0.45s;
+            }
+            .lds-ring div:nth-child(2) {
+                animation-delay: -0.3s;
+            }
+            .lds-ring div:nth-child(3) {
+                animation-delay: -0.15s;
+            }
+            @keyframes lds-ring {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .loading--little .lds-ring {
+                width: 50px;
+                height: 50px;
+            }
+
+            .loading--little .lds-ring div {
+                width: 40px;
+                height: 40px;
+                margin: 5px;
+                border: 5px solid var(--widget-primary);
+                border-color: var(--widget-primary) transparent transparent
+                    transparent;
+            }
+
+            .modal {
+                height: 100vh;
+                width: 100vw;
+                position: fixed;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                top: 0;
+                left: 0;
+                background-color: rgba(0, 0, 0, 0.3);
+                z-index: 9999;
+            }
+
+            .modal__content {
+                width: 650px;
+                background-color: #fff;
+                box-shadow: 0px 0px 15px 0px rgba(34, 60, 80, 0.3);
+                border-radius: 10px;
+                padding: 30px 15px;
+                position: relative;
+            }
+
+            .modal__icon {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                font-size: 20px;
+                color: #000;
+                transition: all 0.3s;
+            }
+
+            .modal__icon:hover {
+                cursor: pointer;
+                color: var(--widget-primary);
+            }
+
+            .modal__header {
+                font-size: 24px;
+                text-align: center;
+                margin-bottom: 40px;
+            }
+
+            .modal__form-group {
+                width: 250px;
+                margin: 0 auto 14px;
+            }
+
+            .modal__input {
+                border-radius: 8px;
+                border: 1px solid var(--widget-border-color);
+                box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.08);
+                padding: 0 10px;
+                min-height: 35px;
+                font-size: 16px;
+                width: 100%;
+            }
+
+            .modal__rent {
+                margin-top: 20px;
+                text-align: center;
+            }
+
+            .modal__footer {
+                display: flex;
+                align-items: center;
+                margin-top: 40px;
+            }
+
+            .modal__price {
+                margin-right: auto;
+                margin-left: 30px;
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            .modal__inventory {
+                display: flex;
+            }
+
+            @media (max-width: 650px) {
+                .modal__content {
+                    width: 100%;
+                    margin: 0 15px;
+                }
+            }
+
+            @media (max-width: 500px) {
+                .modal__inventory {
+                    display: none;
+                }
+            }
+
+            /*.phone-number-input {*/
+            /*    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.08);*/
+            /*    border-radius: 8px;*/
+            /*}*/
+
+            .phone-number-input * {
+                border-color: #e5e6e7;
+            }
+
+            .phone-number-input.vue-phone-number-input
+                .select-country-container {
+                width: 105px;
+                min-width: 105px;
+                max-width: 105px;
+                flex-basis: 105px;
+            }
+
+            .phone-number-input .country-selector__toggle {
+                top: calc(50% - 12px);
+            }
+
+            .phone-number-input .country-selector__label {
+                display: none;
+            }
+
+            .phone-number-input
+                .country-selector.has-value
+                .country-selector__input {
+                padding-top: 1px;
+                border-top-left-radius: 8px !important;
+                border-bottom-left-radius: 8px !important;
+                font-weight: 400;
+                font-size: 16px;
+            }
+
+            .phone-number-input .input-tel,
+            .phone-number-input .country-selector__input,
+            .phone-number-input .input-tel__input,
+            .phone-number-input .country-selector {
+                height: 35px;
+                min-height: 35px;
+                font-size: 16px;
+                outline: none !important;
+            }
+
+            .phone-number-input .input-tel__input,
+            .phone-number-input .country-selector__input {
+                border-color: var(--widget-border-color) !important;
+                box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.08) !important;
+            }
+
+            .phone-number-input .input-tel__input {
+                margin-left: 0 !important;
+                border-left-color: transparent !important;
+            }
+
+            .phone-number-input .input-tel__input {
+                border-top-right-radius: 8px !important;
+                border-bottom-right-radius: 8px !important;
+            }
+
+            .phone-number-input .country-selector__country-flag {
+                top: 13px;
+            }
+
+            .phone-number-input .select-country-container {
+                width: 100px;
+                min-width: 100px;
+                max-width: 100px;
+            }
+
+            .phone-number-input .input-tel .input-tel__label {
+                display: none;
+            }
+
+            .phone-number-input .input-tel.has-value .input-tel__input {
+                padding-top: 0;
+            }
+
+            .success-checkmark {
+                width: 80px;
+                height: 115px;
+                margin: 0 auto;
+            }
+            .success-checkmark .check-icon {
+                width: 80px;
+                height: 80px;
+                position: relative;
+                border-radius: 50%;
+                box-sizing: content-box;
+                border: 4px solid #4caf50;
+            }
+            .success-checkmark .check-icon::before {
+                top: 3px;
+                left: -2px;
+                width: 30px;
+                transform-origin: 100% 50%;
+                border-radius: 100px 0 0 100px;
+            }
+            .success-checkmark .check-icon::after {
+                top: 0;
+                left: 30px;
+                width: 60px;
+                transform-origin: 0 50%;
+                border-radius: 0 100px 100px 0;
+                animation: rotate-circle 4.25s ease-in;
+            }
+            .success-checkmark .check-icon::before,
+            .success-checkmark .check-icon::after {
+                content: "";
+                height: 100px;
+                position: absolute;
+                background: #ffffff;
+                transform: rotate(-45deg);
+            }
+            .success-checkmark .check-icon .icon-line {
+                height: 5px;
+                background-color: #4caf50;
+                display: block;
+                border-radius: 2px;
+                position: absolute;
+                z-index: 10;
+            }
+            .success-checkmark .check-icon .icon-line.line-tip {
+                top: 46px;
+                left: 14px;
+                width: 25px;
+                transform: rotate(45deg);
+                animation: icon-line-tip 0.75s;
+            }
+            .success-checkmark .check-icon .icon-line.line-long {
+                top: 38px;
+                right: 8px;
+                width: 47px;
+                transform: rotate(-45deg);
+                animation: icon-line-long 0.75s;
+            }
+            .success-checkmark .check-icon .icon-circle {
+                top: -4px;
+                left: -4px;
+                z-index: 10;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                position: absolute;
+                box-sizing: content-box;
+                border: 4px solid rgba(76, 175, 80, 0.5);
+            }
+            .success-checkmark .check-icon .icon-fix {
+                top: 8px;
+                width: 5px;
+                left: 26px;
+                z-index: 1;
+                height: 85px;
+                position: absolute;
+                transform: rotate(-45deg);
+                background-color: #ffffff;
+            }
+            @keyframes rotate-circle {
+                0% {
+                    transform: rotate(-45deg);
+                }
+                5% {
+                    transform: rotate(-45deg);
+                }
+                12% {
+                    transform: rotate(-405deg);
+                }
+                100% {
+                    transform: rotate(-405deg);
+                }
+            }
+            @keyframes icon-line-tip {
+                0% {
+                    width: 0;
+                    left: 1px;
+                    top: 19px;
+                }
+                54% {
+                    width: 0;
+                    left: 1px;
+                    top: 19px;
+                }
+                70% {
+                    width: 50px;
+                    left: -8px;
+                    top: 37px;
+                }
+                84% {
+                    width: 17px;
+                    left: 21px;
+                    top: 48px;
+                }
+                100% {
+                    width: 25px;
+                    left: 14px;
+                    top: 45px;
+                }
+            }
+            @keyframes icon-line-long {
+                0% {
+                    width: 0;
+                    right: 46px;
+                    top: 54px;
+                }
+                65% {
+                    width: 0;
+                    right: 46px;
+                    top: 54px;
+                }
+                84% {
+                    width: 55px;
+                    right: 0px;
+                    top: 35px;
+                }
+                100% {
+                    width: 47px;
+                    right: 8px;
+                    top: 38px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="widget" id="app">
+            <div class="widget__list" id="list" v-if="pickedInventory === null">
+                <header class="widget__header header">
+                    <div class="header__form-group form-group">
+                        <label class="form-group__label">Категория</label>
+                        <treeselect
+                            v-model="filter.categories"
+                            :options="categories"
+                            :normalizer="normalizer"
+                            multiple
+                            searchable
+                            search-nested
+                            flatten-search-sesults
+                            close-on-select
+                            placeholder="Выберите категорию"
+                            no-results-text="Нет подходящих категорий"
+                            no-children-text="Отсутствуют дочерние категории"
+                            no-options-text="Категории отсутствуют"
+                            clear-all-text="Очистить все"
+                            class="form-group__input"
+                        >
+                            <label
+                                #option-label="{
+                                node,
+                                shouldShowCount,
+                                count,
+                            }"
+                            >
+                                {{ node.raw.title }}
+                                <span v-if="shouldShowCount">
+                                    ({{ count }})
+                                </span>
+                            </label>
+                            <div #value-label="{ node }">
+                                {{ node.raw.title }}
+                            </div>
+                        </treeselect>
+                    </div>
+                    <div class="header__form-group form-group">
+                        <label class="form-group__label">Пункт проката</label>
+                        <v-select
+                            multiple
+                            :filterable="false"
+                            :searchable="false"
+                            :reduce="(option) => option.id"
+                            placeholder="Выберите пункт проката"
+                            :options="points"
+                            v-model="filter.points"
+                            class="form-group__input"
+                            :close-on-select="false"
+                        >
+                            <template v-slot:option="option">
+                                {{ option.title }}
+                            </template>
+                            <template v-slot:selected-option="option">
+                                {{ option.title }}
+                            </template>
+                        </v-select>
+                    </div>
+                    <div class="header__form-group form-group">
+                        <label
+                            class="form-group__label form-group__label--ml"
+                            style="margin-left: 18px"
+                            >Даты аренды</label
+                        >
+                        <div class="form-group__inline">
+                            <span class="form-group__additional">с</span>
+                            <date-pick
+                                v-model="filter.dateStart"
+                                :pick-time="true"
+                                :is-date-disabled="isPastDate"
+                                :input-attributes="{'placeholder': 'Выберите дату начала'}"
+                                :format="'YYYY-MM-DD HH:mm'"
+                                class="form-group__input"
+                                next-month-caption="Следующий месяц"
+                                prev-month-caption="Предыдущий месяц"
+                                set-time-caption="Время:"
+                                :weekdays="weekdays"
+                                :months="months"
+                            ></date-pick>
+                        </div>
+                    </div>
+                    <div
+                        class="header__form-group form-group form-group--last-child"
+                    >
+                        <label
+                            class="form-group__label form-group__label--empty"
+                            >&nbsp;</label
+                        >
+                        <div class="form-group__inline">
+                            <span class="form-group__additional">по</span>
+                            <date-pick
+                                v-model="filter.dateEnd"
+                                :pick-time="true"
+                                :is-date-disabled="isFutureDate"
+                                :input-attributes="{'placeholder': 'Выберите дату конца'}"
+                                :format="'YYYY-MM-DD HH:mm'"
+                                class="form-group__input"
+                                next-month-caption="Следующий месяц"
+                                prev-month-caption="Предыдущий месяц"
+                                set-time-caption="Время:"
+                                :weekdays="weekdays"
+                                :months="months"
+                            ></date-pick>
+                        </div>
+                    </div>
+                    <button
+                        class="button button--long"
+                        style="align-self: flex-end"
+                        @click="loadInventories"
+                    >
+                        Показать
+                    </button>
+                </header>
+                <main class="main">
+                    <template v-if="!loadingList">
+                        <rih-card
+                            v-for="inventory in inventories"
+                            :inventory="inventory"
+                            @pick="goInventory"
+                        ></rih-card>
+                    </template>
+                    <div class="loading" v-else>
+                        <div class="lds-ring">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            <template v-else>
+                <div class="widget__show-page" id="showpage">
+                    <header class="header back">
+                        <button class="button button--long" @click="goBack">
+                            <i class="fa-solid fa-arrow-left-long"></i>
+                            Назад
+                        </button>
+                    </header>
+                    <main class="main">
+                        <div class="main__info info">
+                            <div class="info__img-wrapper">
+                                <img
+                                    :src="MEDIA + pickedInventory.avatar"
+                                    :alt="pickedInventory.title"
+                                />
+                            </div>
+                            <div class="info__description">
+                                <h2 class="info__heading">
+                                    {{ pickedInventory.title }}
+                                </h2>
+                                <h5
+                                    class="info__category"
+                                    v-if="pickedInventory.category"
+                                >
+                                    {{ pickedInventory.category.title }}
+                                </h5>
+                                <p
+                                    class="info__desc"
+                                    v-if="pickedInventory.description"
+                                >
+                                    {{ pickedInventory.description }}
+                                </p>
+                                <template
+                                    v-if="Array.isArray(pickedInventory.prices)"
+                                >
+                                    <div
+                                        class="info__price price"
+                                        v-for="(price,index) in pickedInventory.prices"
+                                        :class="{'info__price--mb': (index+1) < pickedInventory.prices.length}"
+                                    >
+                                        <h5 class="price__heading">
+                                            Расценки
+                                            <template
+                                                v-if="pickedInventory.prices.length > 1"
+                                            >
+                                                (Тариф {{ price.title }})
+                                            </template>
+                                        </h5>
+                                        <ul class="price__list">
+                                            <li
+                                                v-for="value in price.values"
+                                                class="price__item"
+                                            >
+                                                {{ humanize(value.period) }} -
+                                                {{ value.value }} руб.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+                <div class="widget__booking booking" id="booking">
+                    <h2 class="booking__heading">Расчет аренды</h2>
+                    <div class="booking__wrapper">
+                        <div class="booking__time">
+                            <div class="booking__calendar calendar">
+                                <div class="calendar__time-picker time-picker">
+                                    <div style="margin-right: 15px">
+                                        <span
+                                            class="calendar__label time-picker__label"
+                                        >
+                                            Время начала
+                                        </span>
+                                        <vue-timepicker
+                                            append-to-body
+                                            close-on-complete
+                                            manual-input
+                                            hour-label="Часы"
+                                            minute-label="Минуты"
+                                            placeholder="Введите время"
+                                            v-model="timeStartValue"
+                                            @input="calculateRent"
+                                        ></vue-timepicker>
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="calendar__label time-picker__label"
+                                        >
+                                            Время конца
+                                        </span>
+                                        <vue-timepicker
+                                            append-to-body
+                                            close-on-complete
+                                            manual-input
+                                            hour-label="Часы"
+                                            minute-label="Минуты"
+                                            placeholder="Введите время"
+                                            v-model="timeEndValue"
+                                            @input="calculateRent"
+                                        ></vue-timepicker>
+                                    </div>
+                                </div>
+                                <span class="calendar__label"
+                                    >Выберите срок аренды
+                                </span>
+                                <date-range-picker
+                                    ref="picker"
+                                    opens="inline"
+                                    :ranges="false"
+                                    auto-apply
+                                    single-date-picker="range"
+                                    v-model="range"
+                                    :locale-data="rangeLocale"
+                                    @update="calculateRent"
+                                ></date-range-picker>
+                            </div>
+                        </div>
+                        <div class="booking__info">
+                            <div class="booking__range range">
+                                с
+                                <span class="range__badge range__badge--mr"
+                                    >{{ format(timeStart) }}</span
+                                >
+                                по
+                                <span class="range__badge"
+                                    >{{ format(timeEnd) }}</span
+                                >
+                            </div>
+                            <div class="booking__total">
+                                <span v-if="pickedInventory.point">
+                                    Пункт проката: {{
+                                    pickedInventory.point.title }}
+                                </span>
+                                <span>
+                                    Длительность аренды: {{
+                                    getDifference(range.startDate,
+                                    range.endDate) }}
+                                </span>
+                                <span> Итого: {{ sumRent }} руб. </span>
+                            </div>
+                            <div class="booking__form booking-form">
+                                <div class="booking-form__inventory">
+                                    <img
+                                        class="booking-form__img"
+                                        :src="MEDIA + pickedInventory.avatar"
+                                        :alt="pickedInventory.title"
+                                    />
+                                    <div class="booking-form__info">
+                                        <span class="booking-form__title"
+                                            >{{ pickedInventory.title }}</span
+                                        >
+                                        <span
+                                            v-if="pickedInventory.category"
+                                            class="booking-form__category"
+                                        >
+                                            {{ pickedInventory.category.title }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="booking-form__total">
+                                    К оплате: {{ sumRent }} руб.
+                                </span>
+                                <button
+                                    class="button button--long"
+                                    :disabled="timeEnd === null || timeStart === null"
+                                    @click="showModal = true"
+                                >
+                                    Забронировать
+                                </button>
+                                <div
+                                    class="loading loading--background loading--little"
+                                    v-if="calculating"
+                                >
+                                    <div class="lds-ring">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal" v-if="showModal">
+                    <div class="modal__content">
+                        <i
+                            class="modal__icon fa-solid fa-xmark"
+                            @click="showModal = false"
+                        ></i>
+
+                        <template v-if="!done">
+                            <h3 class="modal__header">Забронировать</h3>
+                            <div class="modal__form-group">
+                                <input
+                                    class="modal__input"
+                                    type="text"
+                                    placeholder="Имя"
+                                    v-model="name"
+                                />
+                            </div>
+                            <div class="modal__form-group">
+                                <input
+                                    class="modal__input"
+                                    type="text"
+                                    placeholder="Фамилия"
+                                    v-model="surname"
+                                />
+                            </div>
+                            <div class="modal__form-group">
+                                <vue-phone-number-input
+                                    class="phone-number-input"
+                                    :preferred-countries="preferredCountries"
+                                    :translations="{ phoneNumberLabel: 'Телефон'}"
+                                    color="#2e55b9"
+                                    valid-color="#1ab394"
+                                    error-color="#ce352c"
+                                    @update="changeNumber"
+                                    v-model="phone"
+                                ></vue-phone-number-input>
+                            </div>
+                            <div class="modal__rent">
+                                <span>
+                                    Аренда с <b>{{ format(timeStart) }}</b> по
+                                    <b>{{ format(timeEnd) }}</b>
+                                </span>
+                            </div>
+
+                            <div class="modal__footer">
+                                <div
+                                    class="booking-form__inventory modal__inventory"
+                                >
+                                    <img
+                                        class="booking-form__img"
+                                        :src="MEDIA + pickedInventory.avatar"
+                                        :alt="pickedInventory.title"
+                                    />
+                                    <div class="booking-form__info">
+                                        <span class="booking-form__title"
+                                            >{{ pickedInventory.title }}</span
+                                        >
+                                        <span
+                                            v-if="pickedInventory.category"
+                                            class="booking-form__category"
+                                        >
+                                            {{ pickedInventory.category.title }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <span class="modal__price"
+                                    >К оплате: {{ sumRent }} руб.
+                                </span>
+
+                                <button
+                                    class="button button--long"
+                                    :disabled="!name || !surname || !formattedPhone"
+                                    @click="addRent"
+                                >
+                                    Оплатить
+                                </button>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div class="success-checkmark">
+                                <div class="check-icon">
+                                    <span class="icon-line line-tip"></span>
+                                    <span class="icon-line line-long"></span>
+                                    <div class="icon-circle"></div>
+                                    <div class="icon-fix"></div>
+                                </div>
+                            </div>
+                            <div style="text-align: center">
+                                <button
+                                    class="button button--long"
+                                    style="margin-top: 30px"
+                                    @click="showModal = false"
+                                >
+                                    Ок
+                                </button>
+                            </div>
+                        </template>
+                        <div
+                            class="loading loading--background loading--little"
+                            v-if="saving"
+                        >
+                            <div class="lds-ring">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <script>
+            Vue.component("v-select", VueSelect.VueSelect);
+            Vue.component("treeselect", VueTreeselect.Treeselect);
+            Vue.component("date-pick", VueDatePick);
+            Vue.component(
+                "date-range-picker",
+                window["vue2-daterange-picker"].default
+            );
+            Vue.component(
+                "vue-phone-number-input",
+                window["vue-phone-number-input"]
+            );
+            Vue.component("vue-timepicker", VueTimepicker.default);
+
+            Vue.component("rihCard", {
+                props: {
+                    inventory: Object,
+                },
+                template: `
+                    <article class="main__card card">
+                        <span v-if="inventory.category" class="card__category">
+                            {{ inventory.category.title }}
+                        </span>
+                        <img
+                            :src="MEDIA + inventory.avatar"
+                            :alt="inventory.title"
+                            class="card__img"
+                        />
+                        <h3>{{ inventory.title }}</h3>
+                        <div
+                            class="card__info"
+                            v-if="Array.isArray(inventory.option)"
+                        >
+                            <span
+                                class="card__additional"
+                                v-for="option in inventory.option"
+                            >
+                                <template v-if="option.title === 'speed'">
+                                    <i class="fa-solid fa-gauge-high"></i>
+                                    {{ option.value }} км/ч
+                                </template>
+                                <template v-if="option.title === 'boost'">
+                                    <i class="fa-regular fa-clock"></i>
+                                    {{ option.value }} сек
+                                </template>
+                            </span>
+                            <span class="card__price" v-if="inventory.prices">
+                                от {{ getMinimumPrice(inventory.prices) }}<i
+                                    class="fa-solid fa-ruble-sign"
+                                    style="font-size: 12px"
+                                ></i>
+                                / {{ getMinimumPricePeriod(inventory.prices) }}
+                            </span>
+                        </div>
+                        <div class="card__more" @click="$emit('pick', inventory, false)">
+                            <span class="card__more-text">Подробнее</span>
+                            <i class="fa-solid fa-angle-down"></i>
+                        </div>
+                        <div class="card__book" @click="$emit('pick', inventory, true)">
+                            <span class="card__book-text">Забронировать</span>
+                            <i class="fa-solid fa-angle-right"></i>
+                        </div>
+                    </article>
+                `,
+                methods: {
+                    getMinimumPrice(prices) {
+                        let min = -1;
+                        if (!Array.isArray(prices)) return min;
+                        prices.forEach((price) => {
+                            if (
+                                min > price.values.slice().reverse()[0].value ||
+                                min === -1
+                            )
+                                min = price.values.slice().reverse()[0].value;
+                        });
+                        return min;
+                    },
+                    getMinimumPricePeriod(prices) {
+                        let min = -1;
+                        let period = "";
+                        if (!Array.isArray(prices)) return period;
+                        prices.forEach((price) => {
+                            if (
+                                min > price.values.slice().reverse()[0].value ||
+                                min === -1
+                            ) {
+                                min = price.values.slice().reverse()[0].value;
+                                period = price.values
+                                    .slice()
+                                    .reverse()[0].period;
+                            }
+                        });
+                        return this.humanize(period);
+                    },
+                    humanize(period) {
+                        const settings = {
+                            language: "ru",
+                            delimiter: " ",
+                            units: ["w", "d", "h", "m"],
+                        };
+                        return humanizeDuration(
+                            moment.duration(period).asMilliseconds(),
+                            settings
+                        );
+                    },
+                },
+            });
+
+            const app = new Vue({
+                el: "#app",
+                data: {
+                    categories: [],
+                    points: [],
+                    inventories: [],
+                    filter: {
+                        categories: [],
+                        points: [],
+                        dateStart: "",
+                        dateEnd: "",
+                    },
+                    weekdays: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
+                    months: [
+                        "Январь",
+                        "Февраль",
+                        "Март",
+                        "Апрель",
+                        "Май",
+                        "Июнь",
+                        "Июль",
+                        "Август",
+                        "Сентябрь",
+                        "Октябрь",
+                        "Ноябрь",
+                        "Декабрь",
+                    ],
+                    pickedInventory: null,
+                    range: {
+                        startDate: null,
+                        endDate: null,
+                    },
+                    timeStartValue: {
+                        HH: "00",
+                        mm: "00",
+                    },
+                    timeEndValue: {
+                        HH: "00",
+                        mm: "00",
+                    },
+                    preferredCountries: [
+                        "RU",
+                        "BY",
+                        "KZ",
+                        "SK",
+                        "TR",
+                        "AM",
+                        "AZ",
+                        "PT",
+                        "ES",
+                        "AE",
+                        "UA",
+                    ],
+                    rangeLocale: {
+                        firstDay: 1,
+                        daysOfWeek: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+                        monthNames: [
+                            "Январь",
+                            "Февраль",
+                            "Март",
+                            "Апрель",
+                            "Май",
+                            "Июнь",
+                            "Июль",
+                            "Август",
+                            "Сентябрь",
+                            "Октябрь",
+                            "Ноябрь",
+                            "Декабрь",
+                        ],
+                    },
+                    calculatedRent: null,
+                    loadingList: true,
+                    calculating: false,
+                    showModal: false,
+                    phone: null,
+                    formattedPhone: null,
+                    name: null,
+                    surname: null,
+                    done: false,
+                    saving: false,
+                },
+                computed: {
+                    timeStart() {
+                        if (this.range.startDate === null) return null;
+                        const date = moment(this.range.startDate);
+                        if (!this.timeStartValue.HH || !this.timeStartValue.mm)
+                            return date.format();
+                        date.set({
+                            hour: this.timeStartValue.HH,
+                            minute: this.timeStartValue.mm,
+                        });
+                        return date.format();
+                    },
+                    timeEnd() {
+                        if (this.range.endDate === null) return null;
+                        const date = moment(this.range.endDate);
+                        if (!this.timeEndValue.HH || !this.timeEndValue.mm)
+                            return date.format();
+                        date.set({
+                            hour: this.timeEndValue.HH,
+                            minute: this.timeEndValue.mm,
+                        });
+                        return date.format();
+                    },
+                    sumRent() {
+                        if (this.calculatedRent === null) return "???";
+                        return this.calculatedRent.sum_total;
+                    },
+                },
+                mounted() {
+                    this.loadCategories();
+                    this.loadPoints();
+                    this.loadInventories();
+                },
+                methods: {
+                    normalizer(node) {
+                        return {
+                            id: node.id,
+                            label: node.title,
+                            children: node.children,
+                        };
+                    },
+                    loadCategories() {
+                        axios
+                            .post(
+                                DOMAIN +
+                                    "/v1/category/inventory/items?token=" +
+                                    TOKEN,
+                                { include: "children" }
+                            )
+                            .then((response) => {
+                                if (
+                                    response.error === undefined &&
+                                    response.data &&
+                                    Array.isArray(response.data.array)
+                                ) {
+                                    this.categories = this.clearEmptyChildren(
+                                        response.data.array
+                                    );
+                                }
+                            });
+                    },
+                    loadPoints() {
+                        axios
+                            .post(DOMAIN + "/v1/point/items?token=" + TOKEN, {
+                                include: "children",
+                            })
+                            .then((response) => {
+                                if (
+                                    response.error === undefined &&
+                                    response.data &&
+                                    Array.isArray(response.data.array)
+                                ) {
+                                    this.points = response.data.array;
+                                }
+                            });
+                    },
+                    loadInventories() {
+                        this.loadingList = true;
+                        const filter = {
+                            include: "option,category,point",
+                        };
+                        if (this.filter.categories !== null) {
+                            filter.category_id = this.filter.categories;
+                        }
+                        if (this.filter.points !== null) {
+                            filter.point_id = this.filter.points;
+                        }
+                        if (
+                            this.filter.dateEnd !== "" ||
+                            this.filter.dateStart !== ""
+                        )
+                            filter.free_period = {};
+                        if (this.filter.dateStart !== "") {
+                            filter.free_period.time_start = moment(
+                                this.filter.dateStart
+                            );
+                        }
+                        if (this.filter.dateEnd !== "") {
+                            filter.free_period.time_end = moment(
+                                this.filter.dateEnd
+                            );
+                        }
+                        axios
+                            .post(
+                                DOMAIN + "/v1/inventory/items?token=" + TOKEN,
+                                filter
+                            )
+                            .then((response) => {
+                                if (
+                                    response.error === undefined &&
+                                    response.data &&
+                                    Array.isArray(response.data.array)
+                                ) {
+                                    const data = response.data.array;
+                                    data.forEach((inv) => {
+                                        if (inv.option)
+                                            inv.option = JSON.parse(inv.option);
+                                    });
+                                    this.inventories = data;
+                                }
+                            })
+                            .finally(() => {
+                                this.loadingList = false;
+                            });
+                    },
+                    addRent() {
+                        if (
+                            !this.calculatedRent ||
+                            !this.name ||
+                            !this.surname ||
+                            !this.formattedPhone
+                        )
+                            return;
+                        this.saving = true;
+                        const payload = {
+                            phone: this.formattedPhone,
+                            name: this.name,
+                            surname: this.surname,
+                        };
+                        axios
+                            .post(
+                                DOMAIN + "/v1/h/client/phone?token=" + TOKEN,
+                                payload
+                            )
+                            .then((response) => {
+                                if (
+                                    response.error === undefined &&
+                                    response.data
+                                ) {
+                                    this.calculatedRent.client = response.data;
+                                    axios
+                                        .put(
+                                            DOMAIN +
+                                                "/v1/rent/edit?token" +
+                                                TOKEN,
+                                            this.calculatedRent
+                                        )
+                                        .then((response) => {
+                                            if (
+                                                response.error === undefined &&
+                                                response.data
+                                            ) {
+                                                this.done = true;
+                                            }
+                                        })
+                                        .then(() => {
+                                            this.saving = false;
+                                        });
+                                }
+                            });
+                    },
+                    changeNumber(obj) {
+                        if (obj.formattedNumber)
+                            this.formattedPhone = obj.formattedNumber;
+                    },
+                    goInventory(inv, goToBook) {
+                        this.pickedInventory = inv;
+                        this.$nextTick(() => {
+                            if (goToBook)
+                                document
+                                    .getElementById("booking")
+                                    .scrollIntoView();
+                            else
+                                document
+                                    .getElementById("showpage")
+                                    .scrollIntoView();
+                        });
+                    },
+                    goBack() {
+                        this.pickedInventory = null;
+                        this.range = {
+                            startDate: null,
+                            endDate: null,
+                        };
+                        this.timeStartValue = {
+                            HH: "00",
+                            mm: "00",
+                        };
+                        this.timeEndValue = {
+                            HH: "00",
+                            mm: "00",
+                        };
+                        this.done = false;
+                        this.showModal = false;
+                        this.$nextTick(() => {
+                            document.getElementById("list").scrollIntoView();
+                        });
+                    },
+                    calculateRent() {
+                        if (this.timeEnd === null || this.timeStart === null)
+                            return;
+                        this.calculating = true;
+                        const filter = {
+                            inventories: [
+                                {
+                                    brokens: [],
+                                    can_kit_id: [],
+                                    count: 1,
+                                    finished: false,
+                                    inventory: this.pickedInventory,
+                                    inventory_id: this.pickedInventory.id,
+                                    kit_id: null,
+                                    kit_number: 0,
+                                    max: 1,
+                                    price: this.pickedInventory.prices[0],
+                                    price_id: this.pickedInventory.prices[0].id,
+                                    services: [],
+                                    sum: 0,
+                                    sum_amount_payment: 0,
+                                    sum_broken: 0,
+                                    sum_discount: 0,
+                                    sum_inventory: 0,
+                                    sum_one: 0,
+                                    sum_total: 0,
+                                    time_end: this.timeEnd,
+                                    time_start: this.timeStart,
+                                },
+                            ],
+                            kits: [],
+                            need_calc_breaking: 1,
+                            need_calc_rent_delay: 0,
+                            payed: 0,
+                            payments: [],
+                            products: [],
+                            source_attraction_id: null,
+                            sum: 0,
+                            sum_additional_service: 0,
+                            sum_deposit: 0,
+                            sum_discount: 0,
+                            sum_product: 0,
+                            sum_real: 0,
+                            sum_rental: 0,
+                            sum_total: 0,
+                            time_end: this.timeEnd,
+                            time_start: this.timeStart,
+                        };
+
+                        if (this.pickedInventory.point) {
+                            filter.close_point = this.pickedInventory.point;
+                            filter.close_point_id =
+                                this.pickedInventory.point.id;
+                            filter.open_point = this.pickedInventory.point;
+                            filter.open_point_id =
+                                this.pickedInventory.point.id;
+                        }
+
+                        axios
+                            .post(
+                                DOMAIN + "/v1/rent/recalc?token=" + TOKEN,
+                                filter
+                            )
+                            .then((response) => {
+                                if (
+                                    response.error === undefined &&
+                                    response.data &&
+                                    Array.isArray(response.data.array)
+                                ) {
+                                    this.calculatedRent =
+                                        response.data.array[0];
+                                }
+                            })
+                            .finally(() => {
+                                this.calculating = false;
+                            });
+                    },
+                    isPastDate(date) {
+                        if (
+                            this.filter.dateEnd !== "" &&
+                            this.filter.dateEnd !== null
+                        ) {
+                            return date > new Date(this.filter.dateEnd);
+                        } else {
+                            return false;
+                        }
+                    },
+                    isFutureDate(date) {
+                        if (
+                            this.filter.dateStart !== "" &&
+                            this.filter.dateStart !== null
+                        ) {
+                            return date < new Date(this.filter.dateStart);
+                        } else {
+                            return false;
+                        }
+                    },
+                    clearEmptyChildren(options) {
+                        if (options) {
+                            return options.map((option) => {
+                                if (
+                                    option.children !== undefined &&
+                                    option.children.length === 0
+                                ) {
+                                    delete option.children;
+                                } else {
+                                    option.children = this.clearEmptyChildren(
+                                        option.children
+                                    );
+                                }
+                                return option;
+                            });
+                        }
+                        return options;
+                    },
+                    humanize(period) {
+                        const settings = {
+                            language: "ru",
+                            delimiter: " ",
+                            units: ["w", "d", "h", "m"],
+                        };
+                        return humanizeDuration(
+                            moment.duration(period).asMilliseconds(),
+                            settings
+                        );
+                    },
+                    format(date) {
+                        if (date === null) return "???";
+                        return moment(date).format("DD.MM.YYYY HH:mm");
+                    },
+                    getDifference(d1, d2) {
+                        if (d1 === null || d2 === null) return "???";
+                        return this.humanize(
+                            moment.duration(
+                                moment(d2).add(1, "days").diff(moment(d1))
+                            )
+                        );
+                    },
+                },
+            });
+        </script>
+    </body>
+</html>
